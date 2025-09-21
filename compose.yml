@@ -1,0 +1,17 @@
+services:
+    snapserver:
+#        network_mode: host            ### Uncomment if Snapclients or Music Assistant cannot locate this instance
+        privileged: true               ### This is used to ensure access to PCM loopbacks is taken care of if you want to use Plexamp on the same system, disable if not using Plexanp. 
+                                       ### See anatosun/plexamp-docker, https://github.com/badaix/snapcast/issues/1165#issuecomment-2110289129
+
+        mem_reservation: "10M"
+        mem_limit: "750M"
+
+        container_name: snapserver
+
+        volumes:
+            - ./data/snapserver.conf:/etc/snapserver.conf:ro
+            - ./data/snapweb:/usr/share/snapserver/snapweb
+        environment:
+            - TZ=America/Indiana/Indianapolis
+        image: kertain/lssc:032
