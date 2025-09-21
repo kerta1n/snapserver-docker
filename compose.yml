@@ -14,4 +14,4 @@ services:
             - ./data/snapweb:/usr/share/snapserver/snapweb
         environment:
             - TZ=America/Indiana/Indianapolis
-        image: kertain/lssc:032
+        image: kertain/snapserver-docker:032-3
