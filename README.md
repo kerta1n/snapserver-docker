@@ -1,5 +1,5 @@
 # snapserver-docker
-Extremely light container (Alpine base) to run a Snapcast server instance.
+Extremely light container (Alpine base) to run a Snapcast server instance. Personally used alongside the Music Assistant container for reliable multi-room music playback.
 
 [Dockerhub](https://hub.docker.com/r/kertain/snapserver-docker)
 
