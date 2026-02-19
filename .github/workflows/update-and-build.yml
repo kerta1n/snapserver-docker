@@ -99,6 +99,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
+          provenance: false
           # Full alpine version tag (e.g. 0.34.0-r0), short tag (e.g. 0.34.0), and latest
           tags: |
             ghcr.io/${{ github.repository_owner }}/snapserver-docker:${{ steps.meta_version.outputs.version }}
