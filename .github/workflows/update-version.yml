@@ -1,4 +1,4 @@
-name: Check and Update Snapcast Version
+name: Check & update Snapcast version
 
 on:
   schedule:
@@ -18,9 +18,9 @@ jobs:
       - name: Fetch latest snapcast-server version from Alpine
         id: get_version
         run: |
-          # Scrape the Alpine edge/community package page for the current version
+          # Version is wrapped in <strong> tags on the Alpine package page
           VERSION=$(curl -fsSL "https://pkgs.alpinelinux.org/package/edge/community/x86/snapcast-server" \
-            | grep -oP '(?<=<td>)[0-9]+\.[0-9]+\.[0-9]+-r[0-9]+(?=</td>)' \
+            | grep -oP '(?<=<strong>)[0-9]+.[0-9]+.[0-9]+-r[0-9]+(?=</strong>)' \
             | head -n1)
 
           if [ -z "$VERSION" ]; then
