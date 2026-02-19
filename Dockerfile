@@ -15,6 +15,7 @@ RUN SNAPWEB_VERSION=$(curl -fsSL "https://api.github.com/repos/badaix/snapweb/re
  && mkdir -p /usr/share/snapserver/snapweb \
  && unzip /tmp/snapweb.zip -d /usr/share/snapserver/snapweb \
  && rm -f /tmp/snapweb.zip
+ && apk del curl unzip
 
 CMD ["snapserver", "-c", "/etc/snapserver.conf"]
 EXPOSE 1704/tcp 1705/tcp 1780/tcp
