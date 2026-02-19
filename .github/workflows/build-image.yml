@@ -1,0 +1,63 @@
+name: Build and Push Container Image
+
+on:
+  push:
+    branches:
+      - main           # adjust if your default branch is named differently
+    paths:
+      - 'Dockerfile'   # only run when the Dockerfile actually changes
+  workflow_dispatch:   # allow manual trigger
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+      packages: write   # needed to push to GHCR
+
+    steps:
+      - name: Checkout repo (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive   # pulls data/snapweb automatically
+
+      - name: Extract snapcast version from Dockerfile
+        id: meta_version
+        run: |
+          VERSION=$(grep -oP '(?<=SNAPCAST_VERSION=)[^\s"]+' Dockerfile | head -n1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          # Build a "short" tag like 0.32.3 (strip the -rN alpine revision)
+          SHORT=$(echo "$VERSION" | grep -oP '^[0-9]+\.[0-9]+\.[0-9]+')
+          echo "short=$SHORT" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU (for multi-arch builds)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          # Full alpine version tag  (e.g. 0.32.3-r0), short tag (e.g. 0.32.3), and latest
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/snapserver-docker:${{ steps.meta_version.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/snapserver-docker:${{ steps.meta_version.outputs.short }}
+            ghcr.io/${{ github.repository_owner }}/snapserver-docker:latest
+          # Pass the version through as a build arg so the Dockerfile ARG is explicit
+          build-args: |
+            SNAPCAST_VERSION=${{ steps.meta_version.outputs.version }}
+          # Cache layers in the GHCR cache to speed up future builds
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/snapserver-docker:buildcache
+          cache-to:   type=registry,ref=ghcr.io/${{ github.repository_owner }}/snapserver-docker:buildcache,mode=max
