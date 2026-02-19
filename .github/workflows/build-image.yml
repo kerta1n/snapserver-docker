@@ -1,15 +1,16 @@
-name: Build and Push Container Image
+name: Build & push container image to GHCR
 
 on:
-  push:
-    branches:
-      - main           # adjust if your default branch is named differently
-    paths:
-      - 'Dockerfile'   # only run when the Dockerfile actually changes
+  workflow_run:
+    workflows: ["Check and Update Snapcast Version"]
+    types:
+      - completed
   workflow_dispatch:   # allow manual trigger
 
 jobs:
   build-and-push:
+    # Only run if the update workflow succeeded; always run on manual trigger
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-slim
     permissions:
       contents: read
@@ -50,7 +51,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          # Full alpine version tag  (e.g. 0.32.3-r0), short tag (e.g. 0.32.3), and latest
+          # Full alpine version tag (e.g. 0.34.0-r0), short tag (e.g. 0.34.0), and latest
           tags: |
             ghcr.io/${{ github.repository_owner }}/snapserver-docker:${{ steps.meta_version.outputs.version }}
             ghcr.io/${{ github.repository_owner }}/snapserver-docker:${{ steps.meta_version.outputs.short }}
