@@ -2,7 +2,7 @@ name: Build & push container image to GHCR
 
 on:
   workflow_run:
-    workflows: ["Check and Update Snapcast Version"]
+    workflows: ["Check & update Snapcast version"]
     types:
       - completed
   workflow_dispatch:   # allow manual trigger
@@ -59,6 +59,3 @@ jobs:
           # Pass the version through as a build arg so the Dockerfile ARG is explicit
           build-args: |
             SNAPCAST_VERSION=${{ steps.meta_version.outputs.version }}
-          # Cache layers in the GHCR cache to speed up future builds
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/snapserver-docker:buildcache
-          cache-to:   type=registry,ref=ghcr.io/${{ github.repository_owner }}/snapserver-docker:buildcache,mode=max
