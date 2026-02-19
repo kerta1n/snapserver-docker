@@ -1,0 +1,55 @@
+name: Check and Update Snapcast Version
+
+on:
+  schedule:
+    - cron: '0 7 * * 4'   # every Thursday at 07:00 UTC
+  workflow_dispatch:        # allow manual trigger
+
+jobs:
+  update-version:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch latest snapcast-server version from Alpine
+        id: get_version
+        run: |
+          # Scrape the Alpine edge/community package page for the current version
+          VERSION=$(curl -fsSL "https://pkgs.alpinelinux.org/package/edge/community/x86/snapcast-server" \
+            | grep -oP '(?<=<td>)[0-9]+\.[0-9]+\.[0-9]+-r[0-9]+(?=</td>)' \
+            | head -n1)
+
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Could not parse version from Alpine package page." >&2
+            exit 1
+          fi
+
+          echo "Latest version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Read current version from Dockerfile
+        id: current_version
+        run: |
+          CURRENT=$(grep -oP '(?<=SNAPCAST_VERSION=)[^\s"]+' Dockerfile | head -n1)
+          echo "Current version: $CURRENT"
+          echo "version=$CURRENT" >> "$GITHUB_OUTPUT"
+
+      - name: Update Dockerfile if version changed
+        if: steps.get_version.outputs.version != steps.current_version.outputs.version
+        run: |
+          NEW="${{ steps.get_version.outputs.version }}"
+          sed -i "s/ARG SNAPCAST_VERSION=.*/ARG SNAPCAST_VERSION=${NEW}/" Dockerfile
+          echo "Dockerfile updated to $NEW"
+
+      - name: Commit and push updated Dockerfile
+        if: steps.get_version.outputs.version != steps.current_version.outputs.version
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Dockerfile
+          git commit -m "chore: bump snapcast-server to ${{ steps.get_version.outputs.version }}"
+          git push
