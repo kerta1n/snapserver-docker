@@ -68,14 +68,14 @@ jobs:
       - name: Checkout repo (with submodules)
         uses: actions/checkout@v4
         with:
-          submodules: recursive   # pulls data/snapweb automatically
+          ref: ${{ github.ref }}
+          submodules: recursive
 
-      - name: Extract snapcast version from Dockerfile
+      - name: Derive version tags
         id: meta_version
         run: |
-          VERSION=$(grep -oP '(?<=SNAPCAST_VERSION=)[^\s"]+' Dockerfile | head -n1)
+          VERSION="${{ needs.check-update.outputs.version }}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          # Build a "short" tag like 0.34.0 (strip the -rN alpine revision)
           SHORT=$(echo "$VERSION" | grep -oP '^[0-9]+\.[0-9]+\.[0-9]+')
           echo "short=$SHORT" >> "$GITHUB_OUTPUT"
 
