@@ -30,7 +30,7 @@ Run `docker compose up -d`
 Install the `docker compose` plugin from APPS, and go back to DOCKER.  
 Scroll all the way down > create stack > edit stack > edit files > copy paste from [compose.yml](compose.yml)
 
-Change `./data/` to `/mnt/user/appdata/snapserver-docker/data/` (line 10 in [compose.yml](compose.yml#L10)), then `wget` the [snapserver.conf](snapserver.conf) file from this repo into  `/mnt/user/appdata/snapserver-docker/data/`.
+Change `./data/` to `/mnt/user/appdata/snapserver-docker/data/` (line 10 in [compose.yml](compose.yml#L10)), then `wget` the [snapserver.conf](data/snapserver.conf) file from this repo into  `/mnt/user/appdata/snapserver-docker/data/`.
 
 Exit the editor, then click the `Compose Up` button on the right.  
   
