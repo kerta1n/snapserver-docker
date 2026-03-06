@@ -6,7 +6,7 @@ ARG SNAPCAST_VERSION=0.34.0-r0
 
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
  && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
- && apk add --no-cache bash snapcast-server=${SNAPCAST_VERSION} sed curl unzip \
+ && apk add --no-cache snapcast-server=${SNAPCAST_VERSION} sed curl unzip \
  && SNAPWEB_VERSION=$(curl -fsSL "https://api.github.com/repos/badaix/snapweb/releases/latest" \
       | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p') \
  && curl -fsSL "https://github.com/badaix/snapweb/releases/download/${SNAPWEB_VERSION}/snapweb.zip" \

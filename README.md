@@ -1,14 +1,13 @@
 # snapserver-docker
-Extremely light container (Alpine base, 22.4MB image size on x86!) to run a Snapcast server instance (with Snapweb). 
+Extremely light container (Alpine base, 22.4MB image size on x86!) to run a Snapcast server instance (with Snapweb).  
 
 Personally used alongside the [Music Assistant container](https://www.music-assistant.io/installation/#docker-image) for a reliable Sonos-replacment setup.  
 (MA allows you to use not just Spotify, but also Apple Music, Plexamp, etc. across multiple players)
 
-<!-- [Dockerhub](https://hub.docker.com/r/kertain/snapserver-docker) -->
-
-This is a multi-arch image; code taken from both [djmaze/librespot-snapserver](https://github.com/djmaze/librespot-snapserver) and [Saiyato/snapserver_docker](https://github.com/Saiyato/snapserver_docker)  
-HUGE THANK YOU to Bart Ribbers for maintaining the Alpine build of Snapcast. [Bart Ribbers' Gitlab](https://gitlab.com/PureTryOut)
-
+This is a multi-arch image: supported architectures are 
+- `amd64`
+- `arm64`
+- `armv7`  
 
 # Usage for `docker compose`
 
@@ -33,11 +32,13 @@ Scroll all the way down > create stack > edit stack > edit files > copy paste fr
 Change `./data/` to `/mnt/user/appdata/snapserver-docker/data/` (line 10 in [compose.yml](compose.yml#L10)), then `wget` the [snapserver.conf](data/snapserver.conf) file from this repo into  `/mnt/user/appdata/snapserver-docker/data/`.
 
 Exit the editor, then click the `Compose Up` button on the right.  
-  
-
-### (Documentation WIP) Use with Plexamp as player via loopback device in KVM on OpenWRT
-https://openwrt.org/docs/guide-user/virtualization/qemu_host
 
 # Snapclient
 [Github Repo](https://github.com/kerta1n/snapclient-docker)  
-[Dockerhub](https://hub.docker.com/r/kertain/snapclient-docker)
+<!-- [Dockerhub](https://hub.docker.com/r/kertain/snapclient-docker) -->
+<!-- [Dockerhub](https://hub.docker.com/r/kertain/snapserver-docker) -->
+
+# Credits/info
+Code is taken from/inspired by both [djmaze/librespot-snapserver](https://github.com/djmaze/librespot-snapserver) and [Saiyato/snapserver_docker](https://github.com/Saiyato/snapserver_docker).  
+
+HUGE THANK YOU to Bart Ribbers for maintaining the Alpine build of Snapcast. [Bart Ribbers' GitHub](https://github.com/puretryout)

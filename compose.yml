@@ -3,12 +3,14 @@ services:
 #        network_mode: host                                            ### Uncomment if Snapclients or Music Assistant cannot locate this instance
 #        privileged: true                                              ### This is used to ensure access to PCM loopbacks is taken care of if you want to use Plexamp on the same system, disable if not using Plexanp. 
                                                                       ### See anatosun/plexamp-docker, https://github.com/badaix/snapcast/issues/1165#issuecomment-2110289129
-        mem_reservation: "2M"
+        restart: unless-stopped
+        mem_reservation: "10M"
         mem_limit: "750M"
-        container_name: snapserver
+        image: ghcr.io/kerta1n/snapserver-docker:latest
         volumes:
             - ./data/snapserver.conf:/etc/snapserver.conf:ro
+        container_name: snapserver
         environment:
             - TZ=America/Indiana/Indianapolis                          ### Manually set timezone to ensure all clients PROPERLY sync
 
-        image: ghcr.io/kerta1n/snapserver-docker:latest
+        
