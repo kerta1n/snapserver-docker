@@ -2,7 +2,7 @@ FROM alpine:latest
 
 LABEL maintainer="kerta1n"
 
-ARG SNAPCAST_VERSION=0.34.0-r0
+ARG SNAPCAST_VERSION=0.35.0-r0
 
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
  && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
